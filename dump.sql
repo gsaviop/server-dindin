@@ -32,3 +32,6 @@ CREATE TABLE transacoes (
 	categoria_id INT REFERENCES categorias(id) NOT NULL,
 	usuario_id INT REFERENCES usuarios(id) NOT NULL
 )
+
+ALTER TABLE transacoes
+ADD COLUMN tipo VARCHAR NOT NULL
