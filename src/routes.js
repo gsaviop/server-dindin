@@ -1,15 +1,22 @@
 const express = require('express');
+
 const { verifyLoggedInUser } = require('./middlewares/authentification');
+
+const {
+    signUpUser, 
+    logInUser,
+    checkUserProfile
+} = require('./controllers/users');
 
 const routes = express();
 
 
-routes.post('/usuario');
-routes.post('/login');
+routes.post('/usuario', signUpUser);
+routes.post('/login', logInUser);
 
 routes.use(verifyLoggedInUser);
 
-routes.get('/usuario');
+routes.get('/usuario', checkUserProfile);
 routes.put('/usuario');
 
 routes.get('/categoria');

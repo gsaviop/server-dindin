@@ -15,13 +15,13 @@ async function verifyLoggedInUser(req, res, next) {
         const { id } = jwt.verify(token, jwtSignature);
 
         const query = "SELECT * FROM usuarios WHERE id = $1";
-        const user = await pool.query(query, [id]);
+        const { rows, rowCount } = await pool.query(query, [id]);
 
-        if(!user) {
+        if(rowCount === 0) {
             return res.status(401).json({"mensagem": "Não autorizado"});
         }
 
-        req.usuario = user;
+        req.user = rows[0];
 
         next();
 
