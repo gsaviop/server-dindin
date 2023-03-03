@@ -10,7 +10,7 @@ routes.post('/login');
 routes.use(verifyLoggedInUser);
 
 routes.get('/usuario');
-routes.post('/usuario');
+routes.put('/usuario');
 
 routes.get('/categoria');
 
