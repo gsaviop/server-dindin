@@ -1,12 +1,24 @@
 const express = require('express');
 
-const { verifyLoggedInUser } = require('./middlewares/authentification');
+const verifyLoggedInUser = require('./middlewares/authentification');
 
 const {
     signUpUser, 
     logInUser,
-    checkUserProfile
+    checkUserProfile,
+    updateUser
 } = require('./controllers/users');
+
+const listAllCategories = require('./controllers/categories');
+
+const {
+    listUserTransactions,
+    checkUserTransactionById,
+    registerUserTransaction,
+    updateUserTransaction,
+    deleteUserTransaction,
+    getAllTransactionStatement
+} = require('./controllers/transactions');
 
 const routes = express();
 
@@ -17,16 +29,16 @@ routes.post('/login', logInUser);
 routes.use(verifyLoggedInUser);
 
 routes.get('/usuario', checkUserProfile);
-routes.put('/usuario');
+routes.put('/usuario', updateUser);
 
-routes.get('/categoria');
+routes.get('/categoria', listAllCategories);
 
-routes.get('/transacao');
-routes.get('/transacao/:id');
-routes.post('/transacao');
-routes.put('/transacao/:id');
-routes.delete('/transacao/:id');
-routes.get('/transacao/extrato');
+routes.get('/transacao/extrato', getAllTransactionStatement);
+routes.get('/transacao', listUserTransactions);
+routes.get('/transacao/:id', checkUserTransactionById);
+routes.post('/transacao', registerUserTransaction);
+routes.put('/transacao/:id', updateUserTransaction);
+routes.delete('/transacao/:id', deleteUserTransaction);
 
 
 module.exports = routes;

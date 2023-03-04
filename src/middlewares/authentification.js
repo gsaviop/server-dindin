@@ -23,7 +23,7 @@ async function verifyLoggedInUser(req, res, next) {
 
         req.user = rows[0];
 
-        next();
+        next()
 
     } catch (error) {
         console.log(error.message);

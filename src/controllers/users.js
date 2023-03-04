@@ -20,7 +20,7 @@ async function signUpUser(req, res) {
     try {
         const encryptedPassword = await bcrypt.hash(senha, 10);
 
-        const query = `INSERTO INTO usuarios (nome, email, senha)
+        const query = `INSERT INTO usuarios (nome, email, senha)
                         VALUES ($1, $2, $3)
                         RETURNING *`
 
@@ -68,9 +68,42 @@ async function checkUserProfile(req, res) {
     return res.status(200).json(req.user);
 }
 
+async function updateUser(req, res) {
+    const { nome, email, senha } = req.body;
+    const userId = req.user.id;
+
+    if(!nome || !email || !senha) {
+        return res.status(400).json({"mensagem": "É necessário preencher todos os campos de cadastro"});
+    }
+
+    const isEmailValid = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
+
+    if(isEmailValid.rows.length > 0) {
+        return res.status(403).json({"mensagem": "O e-mail informado já está sendo utilizado por outro usuário."});
+    }
+
+    try {
+        const encryptedPassword = await bcrypt.hash(senha, 10);
+
+        const query = `UPDATE usuarios SET nome = $1, email = $2, senha = $3
+                        WHERE id = $4
+                        RETURNING *`;
+
+        const updatedUser = await pool.query(query, [nome, email, encryptedPassword, userId]);
+        
+        return res.status(204).json(updatedUser.rows[0]);
+        
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({"mensagem": "Erro interno do servidor"});
+    }
+
+}
+
 
 module.exports = {
     signUpUser,
     logInUser,
-    checkUserProfile
+    checkUserProfile,
+    updateUser
 }
