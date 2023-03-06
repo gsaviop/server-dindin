@@ -47,7 +47,7 @@ async function checkUserTransactionById(req, res) {
         const queryparams = [transactionId, userId];
         const queryTransaction = await pool.query('SELECT * FROM transacoes WHERE id = $1 AND usuario_id = $2', queryparams);
         
-        return res.status(200).json(queryTransaction);
+        return res.status(200).json(queryTransaction.rows[0]);
 
     } catch (error) {
         console.log(error.message);
@@ -81,7 +81,16 @@ async function registerUserTransaction(req, res) {
     
         const result = await pool.query(query, [descricao, valor, data, categoria_id, userId, tipo]);
 
-        const [newTransaction] = result.rows;
+        const { rows } = await pool.query(`SELECT 
+            categorias.descricao AS categoria_nome 
+            FROM categorias 
+            WHERE id = $1`, [categoria_id])
+    
+            const categoria_nome = rows[0]
+            const newTransaction = {
+                ...result.rows[0],
+                ...categoria_nome
+            }
 
         return res.status(201).json(newTransaction);
 

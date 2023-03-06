@@ -65,7 +65,12 @@ async function logInUser(req, res) {
 }
 
 async function checkUserProfile(req, res) {
-    return res.status(200).json(req.user);
+    const { id, nome, email } = req.user
+    return res.status(200).json({
+        id,
+        nome,
+        email
+    });
 }
 
 async function updateUser(req, res) {
