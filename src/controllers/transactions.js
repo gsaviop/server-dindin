@@ -156,7 +156,7 @@ async function deleteUserTransaction(req, res) {
     try {
         const result = await pool.query('DELETE FROM transacoes WHERE id = $1 AND usuario_id = $2 RETURNING *', [transactionId, userId]);
 
-        if(result.rowCount !== 0) {
+        if(result.rowCount === 0) {
             return res.status(400).json({"mensagem": "Erro ao deletar transação"});
         }
 
